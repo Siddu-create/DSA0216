@@ -1,0 +1,34 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def analyze_histogram(image_path, resize_width=800):
+    # Load image
+    image = cv2.imread(image_path)
+    if image is None:
+        raise FileNotFoundError(f"Image not found at {image_path}")
+    
+    # Resize if image is too large
+    if image.shape[1] > resize_width:
+        scale = resize_width / image.shape[1]
+        new_height = int(image.shape[0] * scale)
+        image = cv2.resize(image, (resize_width, new_height))
+    
+    # Define color channels
+    color_channels = ('b', 'g', 'r')
+    
+    plt.figure(figsize=(10, 5))
+    for i, color in enumerate(color_channels):
+        # Properly indented block inside the loop
+        histogram = cv2.calcHist([image], [i], None, [256], [0, 256])
+        plt.plot(histogram, color=color, label=f"{color.upper()} Channel")
+    
+    plt.xlim([0, 256])  # Pixel intensity range
+    plt.title("Color Histogram Analysis")
+    plt.xlabel("Pixel Intensity")
+    plt.ylabel("Frequency")
+    plt.legend()
+    plt.show()
+
+# Example usage
+analyze_histogram("sample.jpg")  # Replace with your image file
